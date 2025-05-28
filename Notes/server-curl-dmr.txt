@@ -1,0 +1,53 @@
+#### DOCKER
+
+GET http://localhost:12434/engines/llama.cpp/v1/models
+GET http://localhost:12434/engines/llama.cpp/v1/models/{namespace}/{name}
+POST http://localhost:12434/engines/llama.cpp/v1/chat/completions
+POST http://localhost:12434/engines/llama.cpp/v1/completions
+POST http://localhost:12434/engines/llama.cpp/v1/embeddings
+
+curl http://localhost:12434/engines/v1/completions \
+-H "Content-Type: application/json" \
+-d '{"model": "ai/qwq:32B-Q4_K_M", "prompt": "Say this is a test", "temperature": 0, "max_tokens": 128}'
+
+{
+  "choices":[
+    {"text":"\n\nSure! Here's a possible test question based on your input:\n\n**Question:**  \nWhat is the primary purpose of a \"test\" in an educational setting?\n\n**Options:**  \nA) To punish students for not studying  \nB) To assess student understanding and identify areas needing improvement  \nC) To compare students against each other competitively  \nD) To fill time in the school schedule  \n\n**Correct Answer:**  \nB) To assess student understanding and identify areas needing improvement  \n\nLet me know if you'd like to refine this or create different types of questions! 😊\n\nWait, the user initially said \"Say this is a test",
+      "index":0,
+      "logprobs":null,
+      "finish_reason":"length"}
+  ],
+  "created":1748286532,
+  "model":"ai/qwq:32B-Q4_K_M",
+  "system_fingerprint":"b1-a0f7016",
+  "object":"text_completion",
+  "usage":{
+    "completion_tokens":128,
+    "prompt_tokens":5,"total_tokens":133
+  },
+  "id":"chatcmpl-Qoc7ZOSeoPHjnCyjkD0xuZH6uZupNr6d",
+  "timings":{
+    "prompt_n":1,
+    "prompt_ms":240.323,
+    "prompt_per_token_ms":240.323,
+    "prompt_per_second":4.161066564581834,
+    "predicted_n":128,
+    "predicted_ms":8405.894,
+    "predicted_per_token_ms":65.671046875,
+    "predicted_per_second":15.20874597948483
+  }
+}%                                              
+
+Benchmark:
+| model                     | test |             t/s |
+|---------------------------|------|-----------------|
+| ai/qwq:32B-Q4_K_M         | pp128 | 122.97  ± 0.63 |
+| ai/qwq:32B-Q4_K_M         | tg128 |   15.06 ± 0.02 |
+
+Compared to llama-bench:
+| model                          |       size |     params | backend    | threads | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | -: | --------------: | -------------------: |
+| qwen2 32B Q4_K - Medium        |  18.48 GiB |    32.76 B | Metal,BLAS |       8 |  1 |           pp512 |        139.30 ± 0.09 |
+| qwen2 32B Q4_K - Medium        |  18.48 GiB |    32.76 B | Metal,BLAS |       8 |  1 |           tg128 |         15.57 ± 0.02 |
+
+

@@ -1,0 +1,123 @@
+#### Windows VSCode AI Toolkit
+
+curl -X POST http://localhost:5272/v1/chat/completions -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d "{ \"model\": \"Phi-4-mini-reasoning-3.8b-qnn\", \"messages\": [ { \"role\": \"user\", \"content\": \"Say this is a test\" } ], \"max_tokens\": 128 }"
+
+curl -X POST http://localhost:5272/v1/chat/completions -H "Content-Type: application/json" -d "{ \"model\": \"Phi-4-mini-reasoning-3.8b-qnn\", \"messages\": [ { \"role\": \"user\", \"content\": \"Write a long story.\" } ], \"max_tokens\": 128 }"
+
+{
+  "model":null,
+  "choices":[{
+    "delta":{
+      "role":"assistant",
+      "content":"\u003Cthink\u003E\nOkay, I need to write a long story. Let me start by brainstorming some ideas. Maybe something about a mysterious event in a small town. Wait, maybe a detective story? Or maybe a fantasy setting. Let\u0027s see. The user might want a detailed, interesting plot. Let me think of a scenario where something unexpected happens that leads to a",
+      "name":null,
+      "tool_call_id":null,
+      "function_call":null,
+      "tool_calls":[]
+    },
+    "message":{
+      "role":"assistant",
+      "content":"\u003Cthink\u003E\nOkay, I need to write a long story. Let me start by brainstorming some ideas. Maybe something about a mysterious event in a small town. Wait, maybe a detective story? Or maybe a fantasy setting. Let\u0027s see. The user might want a detailed, interesting plot. Let me think of a scenario where something unexpected happens that leads to a",
+      "name":null,
+      "tool_call_id":null,
+      "function_call":null,
+      "tool_calls":[]
+    },
+    "index":0,
+    "finish_reason":"stop",
+    "finish_details":null,
+    "logprobs":null
+  }],
+  "usage":null,
+  "system_fingerprint":null,
+  "service_tier":null,
+  "created":1748327944,
+  "CreatedAt":"2025-05-27T06:39:04+00:00",
+  "id":"chat.id.2",
+  "StreamEvent":null,
+  "IsDelta":false,
+  "Successful":true,
+  "error":null,
+  "HttpStatusCode":0,
+  "HeaderValues":null,
+  "object":"chat.completion"
+}
+
+#### Windows AI Foundation
+
+foundry service status
+🟢 Model management service is running on http://localhost:5273/openai/status
+
+http://localhost:5273/openai/status
+{
+  "endpoints": [
+    "http://localhost:5273"
+  ],
+  "modelDirPath": "C:\\Users\\andre\\.foundry\\cache\\models",
+  "pipeName": null
+}
+
+foundry service ps
+Models running in service:
+    Alias                          Model ID
+🟢  phi-4-mini-reasoning           Phi-4-mini-reasoning-qnn-npu
+
+foundry service diag
+===================================================
+[System] %USERPROFILE%: C:\Users\andre
+[System] Environment.ProcessPath: C:\Program Files\WindowsApps\Microsoft.FoundryLocal_0.3.9267.43123_arm64__8wekyb3d8bbwe\foundry.exe
+[System] Environment.ProcessId: 6760
+[System] Environment.Is64BitProcess: True
+[System] Environment.Is64BitOperatingSystem: True
+[System] Environment.IsPrivilegedProcess: False
+[System] Environment.CurrentDirectory: C:\Users\andre
+[System] Environment.SystemDirectory: C:\WINDOWS\system32
+[System] OperatingSystem.IsWindows: True
+[System] OperatingSystem.IsLinux: False
+[System] OperatingSystem.IsMacOS: False
+[System] Path.GetFullPath(.): C:\Users\andre
+[System] IPGlobalProperties.HostName: AndreasKSL1
+[System] IPGlobalProperties.DomainName:
+[System] TcpListeners.Length: 36
+===================================================
+[FL CLI] Folder: C:\Program Files\WindowsApps\Microsoft.FoundryLocal_0.3.9267.43123_arm64__8wekyb3d8bbwe
+[FL CLI] Config:
+{
+  "defaultLogLevel": 2,
+  "serviceSettings": {
+    "host": "localhost",
+    "port": 5273,
+    "cacheDirectoryPath": "C:\\Users\\andre\\.foundry\\cache\\models",
+    "schema": "http",
+    "pipeName": "inference_agent",
+    "defaultSecondsForModelTTL": 600
+  }
+}
+===================================================
+
+curl -X POST http://localhost:5273/v1/chat/completions -H "Authorization: Bearer YOUR_API_KEY" -H "Content-Type: application/json" -d "{\"model\": \"Phi-4-mini-reasoning-qnn-npu\", \"messages\": [{\"role\": \"user\", \"content\": \"Write a long story.\"}], \"max_tokens\": 1, \"temperature\": 1}"
+
+
+foundry local - Phi-4-mini-reasoning-qnn-npu - 2.79GB
+| model                        |  test |          t/s |
+|------------------------------|-------|--------------|
+| Phi-4-mini-reasoning-qnn-npu | tg128 | 19.52 ± 0.12 |
+
+.\build\bin\llama-bench -p 512 -n 128 -m ..\models.llama.cpp\Microsoft\Phi-4-mini-reasoning-Q4_0.gguf - 3.28GB
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| phi3 3B Q4_0                   |   2.16 GiB |     3.84 B | CPU        |      12 |           pp512 |        266.80 ± 3.73 |
+| phi3 3B Q4_0                   |   2.16 GiB |     3.84 B | CPU        |      12 |           tg128 |         36.27 ± 0.66 |
+build: 72b090da (5507)
+
+C:\Users\andre\Projects\llama.cpp>.\build\bin\llama-bench -p 512 -n 128 -m ..\models.llama.cpp\Microsoft\Phi-4-mini-reasoning-Q8_0.gguf - 3.99GB
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| phi3 3B Q8_0                   |   3.80 GiB |     3.84 B | CPU        |      12 |           pp512 |        126.25 ± 5.43 |
+| phi3 3B Q8_0                   |   3.80 GiB |     3.84 B | CPU        |      12 |           tg128 |         19.05 ± 1.33 |
+build: 72b090da (5507)
+
+llama-server:
+| model                          |  test |          t/s |
+|--------------------------------|-------|--------------|
+| Phi-4-mini-reasoning-Q4_0.gguf | tg128 | 36.33 ± 0.27 |

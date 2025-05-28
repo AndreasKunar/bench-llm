@@ -1,0 +1,2 @@
+requests
+foundry_local
